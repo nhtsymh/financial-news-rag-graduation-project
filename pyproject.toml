@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "financial-news-rag-graduation-project"
+version = "1.0.0"
+description = "面向金融新闻的检索增强生成式问答系统毕业项目"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [{name = "毕业项目"}]
+dependencies = [
+  "gradio>=5.20,<6.0",
+  "networkx>=3.2,<4.0",
+  "plotly>=5.24,<7.0",
+  "pypdf>=5.0,<7.0",
+  "python-docx>=1.1,<2.0",
+  "pandas>=2.1,<4.0",
+  "openpyxl>=3.1,<4.0",
+]
+
+[project.optional-dependencies]
+infra = [
+  "qdrant-client>=1.12,<2.0",
+  "neo4j>=5.24,<7.0",
+]
+dev = [
+  "ruff>=0.8,<1.0",
+]
+
+[project.scripts]
+fnrag = "financial_news_rag.ui:run_app"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
