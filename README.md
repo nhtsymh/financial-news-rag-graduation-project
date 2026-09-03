@@ -1,75 +1,279 @@
-# 毕业项目
+# Graduation Project
 
-## 面向金融新闻的检索增强生成式问答系统
+## Retrieval-Augmented Generation Question Answering System for Financial News
 
-这是一个可本地运行的金融新闻 RAG（Retrieval-Augmented Generation）毕业设计项目。系统支持上传金融新闻、公告、研报与表格材料，完成文档解析、文本分块、向量索引、金融实体关系抽取、向量/图谱/融合检索，并返回带原文证据的回答和方向关系图。
+This repository contains a complete graduation project for building a Retrieval-Augmented Generation (RAG) question answering system for financial news and documents.
 
-> 本系统用于信息检索和材料整理，不构成投资建议。涉及交易或重大决策时，请核验原文、发布日期和正式公告。
+The system can process financial news, company announcements, research reports, spreadsheets, and other reference materials. It combines vector retrieval, knowledge graph retrieval, and large language model generation to produce answers with traceable source evidence.
 
-## 功能
+The project includes a Gradio web interface, local offline mode, optional Qdrant and Neo4j integration, Docker deployment files, automated tests, sample data, and technical documentation.
 
-- PDF、DOCX、XLSX、CSV、HTML、TXT、Markdown 文档接入。
-- 1024 Token 默认分块及 256 Token 上下文重叠。
-- 本地 SQLite 向量存储，开箱即用。
-- 可选 Qdrant 向量数据库。
-- 本地方向知识图谱，支持最多两跳关系检索。
-- 可选 Neo4j 图数据库，包含真实写入和路径查询代码。
-- 向量检索、图谱检索和 RRF 融合检索。
-- 基于发布时间的轻量时效加权。
-- 证据编号、文件来源、页码、得分和证据片段展示。
-- NetworkX + Plotly 方向关系图。
-- OpenAI 兼容接口，可连接 Ollama、vLLM、LocalAI 等服务。
-- 无模型服务时使用严格基于证据的离线回答器。
-- Gradio 中文界面，主页标题为“毕业项目”。
+> This project is intended for information retrieval, document analysis, academic demonstration, and research purposes only. It does not constitute financial or investment advice. Always verify the original documents, publication dates, and official announcements before making important decisions.
 
-## 系统流程
+## Features
 
-```mermaid
-flowchart TD
-    A[金融新闻与文档] --> B[解析与分块]
-    B --> C[文本嵌入]
-    C --> D[SQLite 或 Qdrant]
-    B --> E[实体关系抽取]
-    E --> F[SQLite 图谱或 Neo4j]
-    G[用户问题] --> H{检索模式}
-    H --> D
-    H --> F
-    D --> I[证据融合]
-    F --> I
-    I --> J[本地回答器或大语言模型]
-    J --> K[答案、引用与关系图]
+- Supports PDF, DOCX, XLSX, CSV, HTML, TXT, and Markdown files.
+- Splits documents into configurable overlapping text chunks.
+- Provides an offline hash-based embedding model.
+- Provides an offline evidence-based extractive answer generator.
+- Supports OpenAI-compatible embedding and language model APIs.
+- Uses SQLite as the default local vector database.
+- Supports Qdrant as an optional vector database.
+- Builds a directed financial knowledge graph.
+- Uses SQLite as the default local graph database.
+- Supports Neo4j as an optional graph database.
+- Provides vector retrieval, graph retrieval, and hybrid retrieval.
+- Uses Reciprocal Rank Fusion to combine retrieval results.
+- Applies lightweight publication-date relevance weighting.
+- Returns numbered citations with filenames, page numbers, scores, and excerpts.
+- Displays entity relationships using NetworkX and Plotly.
+- Provides a Gradio-based interactive web interface.
+- Includes sample financial documents and demonstration scripts.
+- Includes unit tests and end-to-end tests.
+- Includes Docker and Docker Compose deployment configurations.
+- Runs without an API key in the default offline mode.
+
+## Application Interface
+
+The Gradio homepage displays the title `毕业项目`, which means “Graduation Project.”
+
+The application contains three main sections:
+
+1. **Intelligent Q&A**
+
+   Users can ask questions about indexed financial documents. The interface supports vector, graph, and hybrid retrieval modes. Answers are accompanied by source citations and entity relationship results.
+
+2. **Document Indexing**
+
+   Users can upload supported files and build the vector index and knowledge graph. The page displays the indexed document list and processing results.
+
+3. **Project Information**
+
+   This section explains the system architecture, available storage backends, offline operation, and usage disclaimer.
+
+The knowledge base status panel displays the number of documents, text chunks, entities, relationships, and the currently selected storage backends.
+
+## System Workflow
+
+The system processes a question through the following stages:
+
+1. A user uploads one or more financial documents.
+2. The document parser extracts text and metadata.
+3. The extracted text is divided into overlapping chunks.
+4. Each chunk is converted into a vector embedding.
+5. The chunks and vectors are stored in SQLite or Qdrant.
+6. Financial entities and directed relationships are extracted.
+7. The entities and relationships are stored in SQLite or Neo4j.
+8. The user submits a question.
+9. The system performs vector, graph, or hybrid retrieval.
+10. Relevant evidence is passed to the offline answer generator or a configured large language model.
+11. The application returns an answer, citations, evidence excerpts, and a relationship graph.
+
+## Technology Stack
+
+| Component | Technology |
+|---|---|
+| Programming language | Python 3.10+ |
+| Web interface | Gradio |
+| Local vector storage | SQLite |
+| External vector database | Qdrant |
+| Local graph storage | SQLite |
+| External graph database | Neo4j |
+| Graph processing | NetworkX |
+| Visualization | Plotly |
+| PDF processing | pypdf |
+| Word processing | python-docx |
+| Spreadsheet processing | pandas and openpyxl |
+| Local embedding | Hash-based embedding |
+| Remote model interface | OpenAI-compatible HTTP API |
+| Deployment | Docker and Docker Compose |
+| Testing | Python unittest |
+
+## Project Structure
+
+```text
+financial_news_rag_project/
+├── app.py
+├── pyproject.toml
+├── requirements.txt
+├── Dockerfile
+├── docker-compose.yml
+├── Makefile
+├── LICENSE
+├── SECURITY.md
+├── CHANGELOG.md
+├── README.md
+├── .env.example
+├── .gitignore
+├── .dockerignore
+├── data/
+│   ├── sample_financial_news.md
+│   └── sample_company_announcement.txt
+├── docs/
+│   ├── architecture.md
+│   └── defense-guide.md
+├── scripts/
+│   ├── benchmark.py
+│   ├── run.sh
+│   └── seed_demo.py
+├── src/
+│   └── financial_news_rag/
+│       ├── __init__.py
+│       ├── catalog.py
+│       ├── chunking.py
+│       ├── config.py
+│       ├── embeddings.py
+│       ├── graph_store.py
+│       ├── indexing.py
+│       ├── llm.py
+│       ├── models.py
+│       ├── parsers.py
+│       ├── qa.py
+│       ├── retrieval.py
+│       ├── service.py
+│       ├── ui.py
+│       ├── vector_store.py
+│       └── visualization.py
+└── tests/
+    ├── test_chunking.py
+    ├── test_end_to_end.py
+    ├── test_graph.py
+    └── test_parsers.py
 ```
 
-## 快速启动
+## Requirements
 
-建议使用 Python 3.10 或 3.11。
+The recommended environment is:
+
+- Python 3.10 or Python 3.11
+- pip
+- Git
+- A modern web browser
+- Docker Desktop, only when using Docker deployment
+
+The default offline mode does not require Qdrant, Neo4j, an API key, or an external language model.
+
+## Quick Start
+
+### Linux and macOS
+
+Clone the repository:
 
 ```bash
-python -m venv .venv
+git clone https://github.com/nhtsymh/financial-news-rag-graduation-project.git
+cd financial-news-rag-graduation-project
+```
+
+Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
 source .venv/bin/activate
+```
+
+Install the project:
+
+```bash
 python -m pip install --upgrade pip
 pip install -e .
+```
+
+Create the environment configuration:
+
+```bash
 cp .env.example .env
+```
+
+Load the sample documents:
+
+```bash
 python scripts/seed_demo.py
+```
+
+Start the application:
+
+```bash
 python app.py
 ```
 
-Windows PowerShell 激活环境：
+Open the following address in a browser:
 
-```powershell
-.venv\Scripts\Activate.ps1
+```text
+http://127.0.0.1:7860
 ```
 
-浏览器访问 <http://127.0.0.1:7860>。首次启动后，在“文档索引”页面上传文件，点击“构建知识索引”，再进入“智能问答”。仓库已经提供两份可直接上传的示例材料：
+### Windows PowerShell
 
-- `data/sample_financial_news.md`
-- `data/sample_company_announcement.txt`
+Clone the repository:
 
-## 两种运行方式
+```powershell
+git clone https://github.com/nhtsymh/financial-news-rag-graduation-project.git
+Set-Location financial-news-rag-graduation-project
+```
 
-### 1. 零外部服务模式
+Create and activate a virtual environment:
 
-`.env` 保持以下配置：
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Install the project:
+
+```powershell
+python -m pip install --upgrade pip
+pip install -e .
+```
+
+Create the environment configuration:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Load the sample documents:
+
+```powershell
+python scripts\seed_demo.py
+```
+
+Start the application:
+
+```powershell
+python app.py
+```
+
+Open the following address in a browser:
+
+```text
+http://127.0.0.1:7860
+```
+
+## Basic Usage
+
+1. Start the application.
+2. Open `http://127.0.0.1:7860`.
+3. Select the **Document Indexing** tab.
+4. Upload one or more supported documents.
+5. Click the button to build the document index.
+6. Wait until the indexing process is complete.
+7. Open the **Intelligent Q&A** tab.
+8. Select a retrieval mode.
+9. Enter a question about the uploaded documents.
+10. Review the generated answer, citations, evidence excerpts, and entity relationships.
+
+Two sample documents are included:
+
+```text
+data/sample_financial_news.md
+data/sample_company_announcement.txt
+```
+
+## Offline Mode
+
+Offline mode is enabled by default and requires no external services.
+
+Use the following values in `.env`:
 
 ```dotenv
 VECTOR_BACKEND=sqlite
@@ -78,38 +282,103 @@ EMBEDDING_PROVIDER=hash
 LLM_PROVIDER=extractive
 ```
 
-该模式不需要 Qdrant、Neo4j 或大模型服务，适合答辩演示和功能验证。哈希嵌入及抽取式回答器用于保证离线可运行，不代表生产级模型质量。
+In this mode:
 
-### 2. Qdrant + Neo4j 模式
+- Vector data is stored locally in SQLite.
+- Knowledge graph data is stored locally in SQLite.
+- Embeddings are generated using the built-in hash-based embedder.
+- Answers are generated by an evidence-based extractive generator.
+- Uploaded document content is not sent to an external model service.
 
-最简单的方式是使用 Docker Compose：
+Offline mode is suitable for functional testing, classroom demonstration, and graduation project presentations. The built-in hash embedding and extractive answer generator are designed for reliable local operation, but they are not intended to replace production-grade embedding or language models.
+
+## Docker Deployment
+
+To start the application with Qdrant and Neo4j, run:
 
 ```bash
 docker compose up --build
 ```
 
-服务地址：
+The following services will be available:
 
-| 服务 | 地址 |
+| Service | Address |
 |---|---|
-| 毕业项目主页 | <http://localhost:7860> |
-| Qdrant | <http://localhost:6333> |
-| Neo4j Browser | <http://localhost:7474> |
+| Graduation Project application | `http://localhost:7860` |
+| Qdrant | `http://localhost:6333` |
+| Neo4j Browser | `http://localhost:7474` |
+| Neo4j Bolt connection | `bolt://localhost:7687` |
 
-Neo4j 默认账号为 `neo4j`，默认密码见 `docker-compose.yml`。正式部署前必须修改密码。
+The default Neo4j username is:
 
-## 接入本地大模型
+```text
+neo4j
+```
 
-下面以提供 OpenAI 兼容接口的模型服务为例：
+The default development password is defined in `docker-compose.yml`.
+
+Change the default password before deploying the application to a public or production environment.
+
+To stop the services:
+
+```bash
+docker compose down
+```
+
+To stop the services and remove Docker volumes:
+
+```bash
+docker compose down -v
+```
+
+Removing volumes permanently deletes the data stored by the Docker services.
+
+## Using Qdrant and Neo4j Locally
+
+Install the optional infrastructure dependencies:
+
+```bash
+pip install -e ".[infra]"
+```
+
+Configure `.env`:
+
+```dotenv
+VECTOR_BACKEND=qdrant
+GRAPH_BACKEND=neo4j
+
+QDRANT_URL=http://localhost:6333
+QDRANT_API_KEY=
+QDRANT_COLLECTION=financial_news_chunks
+
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=graduation-project-password
+```
+
+Ensure that Qdrant and Neo4j are running before starting the application.
+
+## Connecting an OpenAI-Compatible Language Model
+
+The project supports language model services that expose an OpenAI-compatible API, including Ollama, vLLM, and LocalAI.
+
+Example configuration:
 
 ```dotenv
 LLM_PROVIDER=openai
 LLM_BASE_URL=http://localhost:11434/v1
 LLM_API_KEY=ollama
 LLM_MODEL=qwen2.5:7b
+LLM_TIMEOUT_SECONDS=120
 ```
 
-如需使用远程嵌入接口：
+The API key value depends on the selected provider. Some local providers accept a placeholder value.
+
+Restart the application after changing `.env`.
+
+## Connecting an OpenAI-Compatible Embedding Model
+
+Example configuration:
 
 ```dotenv
 EMBEDDING_PROVIDER=openai
@@ -119,78 +388,201 @@ EMBEDDING_MODEL=nomic-embed-text
 EMBEDDING_DIMENSIONS=768
 ```
 
-更换嵌入维度时，请使用新的 `QDRANT_COLLECTION` 名称，避免与旧集合维度冲突。
+When changing the embedding dimension, use a new Qdrant collection name:
 
-## 检索模式
-
-| 模式 | 适用问题 | 实现方式 |
-|---|---|---|
-| 向量检索 | 原文事实、数字、公告内容 | 问题嵌入后执行 Top-K 相似度检索 |
-| 图谱检索 | 公司、机构、政策、行业关系 | 从问题实体出发执行方向关系及多跳检索 |
-| 融合检索 | 需要原文和关系链的综合问题 | 对向量证据和图谱证据执行 RRF 融合 |
-
-系统会对带发布日期的材料增加小幅时效权重，但不会用发布时间覆盖语义相关性。
-
-## 项目结构
-
-```text
-financial_news_rag_project/
-├── app.py                         # Gradio 入口
-├── src/financial_news_rag/
-│   ├── config.py                  # 环境配置
-│   ├── parsers.py                 # 多格式文档解析
-│   ├── chunking.py                # 文本分块
-│   ├── embeddings.py              # 本地及远程嵌入
-│   ├── vector_store.py            # SQLite/Qdrant 向量存储
-│   ├── graph_store.py             # 实体抽取、SQLite/Neo4j 图谱
-│   ├── indexing.py                # 双通道索引流程
-│   ├── retrieval.py               # 三类检索与融合
-│   ├── llm.py                     # 离线及 OpenAI 兼容模型
-│   ├── qa.py                      # Prompt、答案和引用
-│   ├── service.py                 # 应用服务层
-│   ├── visualization.py           # 方向关系图
-│   └── ui.py                      # Gradio 页面
-├── data/                          # 示例金融材料
-├── tests/                         # 单元与端到端测试
-├── scripts/                       # 演示和基准脚本
-├── docs/                          # 架构和答辩说明
-├── Dockerfile
-└── docker-compose.yml
+```dotenv
+QDRANT_COLLECTION=financial_news_chunks_768
 ```
 
-## 测试
+A Qdrant collection cannot store vectors with different dimensions in the same collection.
 
-核心测试不依赖 Gradio、Qdrant 或 Neo4j，可以直接执行：
+## Retrieval Modes
+
+### Vector Retrieval
+
+Vector retrieval is suitable for:
+
+- Locating specific facts in documents
+- Finding semantically related passages
+- Retrieving numerical information
+- Searching company announcements
+- Searching policy and regulatory text
+
+The user question is converted into an embedding and compared with indexed document chunks.
+
+### Graph Retrieval
+
+Graph retrieval is suitable for:
+
+- Company relationships
+- Institution relationships
+- Policy relationships
+- Industry relationships
+- Multi-entity questions
+- Relationship-chain questions
+
+The system detects entities in the question and searches the directed knowledge graph for related paths.
+
+### Hybrid Retrieval
+
+Hybrid retrieval combines vector and graph results using Reciprocal Rank Fusion.
+
+It is suitable for questions that require both original text evidence and entity relationships.
+
+Hybrid retrieval is the default mode.
+
+## Configuration
+
+The main environment variables are listed below.
+
+| Variable | Default value | Description |
+|---|---|---|
+| `FNRAG_DATA_DIR` | `./runtime_data` | Local runtime data directory |
+| `VECTOR_BACKEND` | `sqlite` | Vector backend: `sqlite` or `qdrant` |
+| `GRAPH_BACKEND` | `sqlite` | Graph backend: `sqlite` or `neo4j` |
+| `CHUNK_SIZE` | `1024` | Approximate maximum chunk size |
+| `CHUNK_OVERLAP` | `256` | Overlap between adjacent chunks |
+| `TOP_K` | `5` | Default number of retrieval results |
+| `GRAPH_HOPS` | `2` | Maximum graph retrieval depth |
+| `EMBEDDING_PROVIDER` | `hash` | Embedding provider: `hash` or `openai` |
+| `EMBEDDING_DIMENSIONS` | `384` | Embedding vector dimensions |
+| `EMBEDDING_BASE_URL` | `http://localhost:11434/v1` | Embedding API base URL |
+| `EMBEDDING_MODEL` | `nomic-embed-text` | Embedding model name |
+| `LLM_PROVIDER` | `extractive` | Answer provider: `extractive` or `openai` |
+| `LLM_BASE_URL` | `http://localhost:11434/v1` | Language model API base URL |
+| `LLM_MODEL` | `qwen2.5:7b` | Language model name |
+| `LLM_TIMEOUT_SECONDS` | `120` | Language model request timeout |
+| `QDRANT_URL` | `http://localhost:6333` | Qdrant server address |
+| `QDRANT_COLLECTION` | `financial_news_chunks` | Qdrant collection name |
+| `NEO4J_URI` | `bolt://localhost:7687` | Neo4j connection address |
+| `NEO4J_USER` | `neo4j` | Neo4j username |
+| `GRADIO_SERVER_NAME` | `127.0.0.1` | Gradio server bind address |
+| `GRADIO_SERVER_PORT` | `7860` | Gradio server port |
+| `GRADIO_SHARE` | `false` | Whether to create a Gradio share link |
+
+## Testing
+
+Run all unit and end-to-end tests:
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-完整语法检查：
+Run the syntax compilation check:
 
 ```bash
 python -m compileall -q app.py src tests scripts
 ```
 
-简单检索性能测试：
+Run the retrieval benchmark:
 
 ```bash
 python scripts/benchmark.py
 ```
 
-## 数据与安全
+The core automated tests do not require Gradio, Qdrant, Neo4j, or an external language model.
 
-- 默认数据保存在 `runtime_data/`，该目录已加入 `.gitignore`。
-- SQLite 模式不会将文档发送到外部服务。
-- 配置远程 OCR、嵌入或大模型服务时，应确认文件是否允许离开本机。
-- `.env` 不应提交到 Git；仓库只提供不含真实密钥的 `.env.example`。
-- 图谱关系由规则或模型抽取，可能存在误识别，关系图不能替代原文证据。
+## Data Storage
 
-## 二次开发
+By default, runtime data is stored in:
 
-- 替换实体抽取：实现与 `FinancialEntityExtractor.extract()` 相同的接口。
-- 替换嵌入模型：实现 `Embedder.embed()`。
-- 替换生成模型：实现 `LanguageModel.generate()`。
-- 新增存储后端：实现 `VectorStore` 或 `GraphStore` 协议。
+```text
+runtime_data/
+```
 
-详细设计见 `docs/architecture.md`，答辩演示流程见 `docs/defense-guide.md`。
+This directory is excluded from Git through `.gitignore`.
+
+The directory may contain:
+
+- Parsed document metadata
+- Text chunks
+- Vector records
+- Knowledge graph entities
+- Knowledge graph relationships
+- Local SQLite database files
+
+Delete the directory only when you intentionally want to reset the local knowledge base.
+
+## Security and Privacy
+
+- Never commit a real `.env` file.
+- Never commit API keys, passwords, tokens, or private credentials.
+- Only `.env.example` should be stored in the repository.
+- Review documents before uploading them to external model services.
+- SQLite offline mode keeps document processing local.
+- Remote embedding or language model providers may receive document excerpts.
+- Change the default Neo4j password before public deployment.
+- Do not expose Qdrant or Neo4j directly to the public internet without authentication.
+- Review generated answers against their cited source documents.
+- Knowledge graph relationships may contain extraction errors.
+
+## Limitations
+
+- The built-in PDF parser does not perform OCR on scanned image-only PDF files.
+- The offline hash embedding model provides lower semantic quality than a production embedding model.
+- The extractive answer generator cannot provide the same reasoning quality as a large language model.
+- Rule-based entity and relationship extraction may produce missing or incorrect relationships.
+- Publication-date weighting is lightweight and does not replace time-aware financial analysis.
+- Generated answers depend on the quality and completeness of the uploaded documents.
+- This system must not be used as an automated financial trading or investment decision system.
+
+## Extending the Project
+
+The project is designed with replaceable components.
+
+### Custom Entity Extractor
+
+Implement an extractor compatible with:
+
+```python
+FinancialEntityExtractor.extract()
+```
+
+### Custom Embedding Model
+
+Implement an embedder compatible with:
+
+```python
+Embedder.embed()
+```
+
+### Custom Language Model
+
+Implement a language model compatible with:
+
+```python
+LanguageModel.generate()
+```
+
+### Custom Vector Store
+
+Implement the vector store interface used by the indexing and retrieval services.
+
+### Custom Graph Store
+
+Implement the graph store interface used by the indexing and graph retrieval services.
+
+## Documentation
+
+Additional documentation is available in:
+
+```text
+docs/architecture.md
+docs/defense-guide.md
+```
+
+`architecture.md` explains the internal system design.
+
+`defense-guide.md` provides a suggested graduation project demonstration and presentation process.
+
+## License
+
+This project is released under the MIT License.
+
+See the `LICENSE` file for details.
+
+## Disclaimer
+
+This software is an academic graduation project.
+
+It is provided without any guarantee of accuracy, completeness, availability, or fitness for a particular purpose. Financial information generated or retrieved by the system should always be verified against original and official sources.
