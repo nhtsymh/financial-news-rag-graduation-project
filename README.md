@@ -2,7 +2,7 @@
 
 ## Retrieval-Augmented Generation Question Answering System for Financial News
 
-This repository contains a complete graduation project for building a Retrieval-Augmented Generation (RAG) question answering system for financial news and documents.
+This repository contains my complete graduation project for building a Retrieval-Augmented Generation (RAG) question answering system for financial news and documents.
 
 The system can process financial news, company announcements, research reports, spreadsheets, and other reference materials. It combines vector retrieval, knowledge graph retrieval, and large language model generation to produce answers with traceable source evidence.
 
