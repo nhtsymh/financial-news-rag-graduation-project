@@ -6,4 +6,3 @@
 - 完成 SQLite/Qdrant 向量存储与 SQLite/Neo4j 图谱存储。
 - 完成向量、图谱和 RRF 融合检索。
 - 完成证据约束回答、引用表和方向关系图。
-- 完成“毕业项目”Gradio 主页、Docker、示例数据和测试。
