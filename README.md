@@ -35,8 +35,6 @@ The project includes a Gradio web interface, local offline mode, optional Qdrant
 
 ## Application Interface
 
-The Gradio homepage displays the title `毕业项目`, which means “Graduation Project.”
-
 The application contains three main sections:
 
 1. **Intelligent Q&A**
