@@ -519,19 +519,6 @@ financial-news-rag-graduation-project/
 
 ---
 
-## Limitations
-
-- Scanned image-only PDFs require OCR before indexing.
-- The offline hash embedder is designed for deterministic demonstration and has lower semantic quality than a trained embedding model.
-- The built-in extractive generator cannot match the reasoning or language quality of a capable language model.
-- The default entity and relationship extractor is rule-based and may miss entities or generate incorrect relationships.
-- Graph traversal retrieves relationship paths but does not by itself guarantee correct multi-step reasoning.
-- Publication-date weighting is lightweight and should not be interpreted as financial time-series modeling.
-- Retrieval quality depends on document coverage, parsing quality, chunk settings, and the configured embedding model.
-- The included smoke benchmark does not measure Recall@K, ranking quality, factual accuracy, or real-world financial performance.
-- Optional Qdrant, Neo4j, and remote-model deployments require additional service configuration and security hardening.
-
----
 
 ## Responsible Use
 
